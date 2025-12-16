@@ -6,9 +6,9 @@
 # --- CONFIGURATION ---
 $MiStickIP = "192.168.55.6"       
 $AdbPath = "C:\adb\adb.exe"       
-$IdleLimitMinutes = 5            # Changed to 15 (1 minute is too short for testing)
-$CheckInterval = 60               # Check every 60 seconds
-$LogFile = "C:\adb\mistick_log.txt" # Define a log file
+$IdleLimitMinutes = 5
+$CheckInterval = 60                     # Check every 60 seconds
+$LogFile = "C:\adb\mistick_log.txt"     # Define a log file
 
 # --- HELPER FUNCTION ---
 function Log-Message {
@@ -28,7 +28,7 @@ Log-Message "Starting Watchdog for $MiStickIP..."
 
 while ($true) {
     try {
-        # 1. AGGRESSIVE MEDIA CHECK
+        # 1. Check media
         $MediaStatus = & $AdbPath -s $MiStickIP shell dumpsys media_session | Select-String "state=PlaybackState {.*state=3"
 
         # 2. Check if screen is on
@@ -36,7 +36,7 @@ while ($true) {
 
         if (-not $PowerStatus) {
             $IdleCounter = 0
-            # Optional: Don't log every loop to save disk space, only log state changes
+            # Don't log every loop to save disk space, only log state changes
         }
         elseif ($MediaStatus) {
             $IdleCounter = 0
